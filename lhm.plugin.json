@@ -1,0 +1,107 @@
+{
+  "identifier": "jackalope-dev-allmcps-server",
+  "name": "AllMCPs",
+  "description": "Search, browse, get install configs for, and submit Model Context Protocol (MCP) servers to the AllMCPs.com directory.",
+  "version": "2.0.1",
+  "author": "Jackalope Digital",
+  "authorUrl": "https://github.com/Jackalope-Dev",
+  "icon": "https://allmcps.com/logo-icon.png",
+  "category": "development",
+  "tags": ["directory", "search", "discovery", "registry", "submission"],
+  "tools": [
+    {
+      "name": "search_mcp_servers",
+      "description": "Search the AllMCPs directory for Model Context Protocol (MCP) servers by keyword or category.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string", "description": "Search term (e.g., \"github\", \"postgres\", \"slack\", \"database\")" },
+          "category": { "type": "string", "description": "Optional category name to filter by" },
+          "limit": { "type": "number", "description": "Max number of results to return (default: 10)" }
+        }
+      }
+    },
+    {
+      "name": "get_mcp_install_config",
+      "description": "Get the exact claude_desktop_config.json setup snippet and documentation for a specific MCP server by ID.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "The server ID (e.g. \"github-mcp\", \"sqlite-mcp\")" }
+        },
+        "required": ["id"]
+      }
+    },
+    {
+      "name": "list_mcp_categories",
+      "description": "List all categories available in the AllMCPs directory along with server counts.",
+      "inputSchema": { "type": "object", "properties": {} }
+    },
+    {
+      "name": "get_boost_pricing",
+      "description": "Get pricing and features for boosting / featuring an MCP server on AllMCPs.com.",
+      "inputSchema": { "type": "object", "properties": {} }
+    },
+    {
+      "name": "boost_mcp_server",
+      "description": "Initiate a sponsorship / boost order for an MCP server by ID, returning a Stripe checkout session URL and x402 invoice.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "The server ID to boost (e.g. \"github-mcp\")" },
+          "sku": {
+            "type": "string",
+            "enum": ["featured_7d", "category_sponsor_7d", "premium_monthly", "priority_review"],
+            "description": "Sponsorship tier (default: featured_7d)"
+          },
+          "email": { "type": "string", "description": "Optional contact/billing email" }
+        },
+        "required": ["id"]
+      }
+    },
+    {
+      "name": "get_boost_status",
+      "description": "Check current boost status, verified badge level, and sponsorship expiration for an MCP server by ID.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "The server ID to check" }
+        },
+        "required": ["id"]
+      }
+    },
+    {
+      "name": "submit_mcp_server",
+      "description": "Programmatically submit a new MCP server repository to AllMCPs.com for indexing and review.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Server name (e.g., \"PostgreSQL MCP\")" },
+          "url": { "type": "string", "description": "GitHub repository or website URL" },
+          "description": { "type": "string", "description": "Short summary of what this MCP server does" },
+          "category": { "type": "string", "description": "Category (e.g., \"Databases\", \"Developer Tools\")" },
+          "email": { "type": "string", "description": "Contact email for listing verification & status updates" },
+          "websiteUrl": { "type": "string", "description": "Optional official website URL" }
+        },
+        "required": ["name", "url", "email"]
+      }
+    },
+    {
+      "name": "verify_mcp_claim",
+      "description": "Verify ownership and claim an MCP server listing by checking GitHub README badge, website badge, or DNS TXT record.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "The server ID to claim & verify (e.g. \"github-mcp\")" },
+          "method": {
+            "type": "string",
+            "enum": ["github", "website_badge", "dns"],
+            "description": "Verification method (default: github)"
+          },
+          "websiteUrl": { "type": "string", "description": "Optional website URL for website/dns verification" }
+        },
+        "required": ["id"]
+      }
+    }
+  ]
+}

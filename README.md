@@ -10,6 +10,7 @@
   <a href="https://www.npmjs.com/package/allmcps-server"><img src="https://img.shields.io/npm/dm/allmcps-server.svg" alt="npm downloads"></a>
   <a href="https://github.com/Jackalope-Dev/allmcps-server/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/allmcps-server.svg" alt="MIT license"></a>
   <a href="https://glama.ai/mcp/servers/Jackalope-Dev/allmcps-server"><img src="https://glama.ai/mcp/servers/Jackalope-Dev/allmcps-server/badges/score.svg" alt="allmcps-server MCP server"></a>
+  <a href="https://lobehub.com/mcp/jackalope-dev-allmcps-server"><img src="https://img.shields.io/badge/LobeHub-Marketplace-1677ff" alt="LobeHub Marketplace"></a>
 </p>
 
 The official local MCP server for [AllMCPs.com](https://allmcps.com) — search, browse, get install configs for, and submit Model Context Protocol (MCP) servers directly from Claude, Cursor, or any MCP-compatible agent.
@@ -67,6 +68,7 @@ Every tool's full input schema (including optional arguments like `category`, `d
 
 - Directory API docs: https://allmcps.com/docs/api
 - Remote MCP server (same tools, called directly over HTTP): https://allmcps.com/api/mcp
+- Also listed on the [official MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.Jackalope-Dev/allmcps-server`, [Glama](https://glama.ai/mcp/servers/Jackalope-Dev/allmcps-server), and the [LobeHub Marketplace](https://lobehub.com/mcp/jackalope-dev-allmcps-server)
 
 ## License
 
