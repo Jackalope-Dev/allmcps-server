@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.png" alt="AllMCPs logo" width="96" height="96">
+</p>
+
 # allmcps-server
 
 [![AllMCPs Verified](https://allmcps.com/api/badge/allmcps-server)](https://allmcps.com/mcp/allmcps-server?verify=04aa8bd4-c85f-4470-b5b4-19d690d1cc11)
