@@ -1,7 +1,7 @@
 {
   "name": "allmcps-server",
-  "version": "1.0.2",
-  "description": "The official MCP server for AllMCPs.com - submit and manage tools directly from your AI.",
+  "version": "2.0.0",
+  "description": "The official MCP server for AllMCPs.com - search, browse, get install configs, and submit MCP servers directly from your AI agent.",
   "main": "dist/index.js",
   "type": "module",
   "bin": {
