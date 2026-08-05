@@ -5,6 +5,8 @@
 # allmcps-server
 
 [![AllMCPs Verified](https://allmcps.com/api/badge/allmcps-server)](https://allmcps.com/mcp/allmcps-server?verify=04aa8bd4-c85f-4470-b5b4-19d690d1cc11)
+[![npm version](https://img.shields.io/npm/v/allmcps-server.svg)](https://www.npmjs.com/package/allmcps-server)
+[![npm downloads](https://img.shields.io/npm/dm/allmcps-server.svg)](https://www.npmjs.com/package/allmcps-server)
 
 The official local MCP server for [AllMCPs.com](https://allmcps.com) — submit a Model Context Protocol (MCP) server to the directory directly from Claude, Cursor, or any MCP-compatible agent.
 
