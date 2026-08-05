@@ -1,0 +1,30 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.jackalope-dev/allmcps-server",
+  "description": "Search, browse, and submit MCP servers to the AllMCPs.com directory.",
+  "repository": {
+    "url": "https://github.com/Jackalope-Dev/allmcps-server",
+    "source": "github"
+  },
+  "version": "2.0.0",
+  "websiteUrl": "https://allmcps.com",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "allmcps-server",
+      "version": "2.0.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "description": "Override the remote AllMCPs MCP endpoint this package bridges to.",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false,
+          "name": "ALLMCPS_MCP_URL"
+        }
+      ]
+    }
+  ]
+}

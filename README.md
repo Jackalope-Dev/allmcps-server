@@ -9,6 +9,7 @@
   <a href="https://www.npmjs.com/package/allmcps-server"><img src="https://img.shields.io/npm/v/allmcps-server.svg" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/allmcps-server"><img src="https://img.shields.io/npm/dm/allmcps-server.svg" alt="npm downloads"></a>
   <a href="https://github.com/Jackalope-Dev/allmcps-server/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/allmcps-server.svg" alt="MIT license"></a>
+  <a href="https://glama.ai/mcp/servers/Jackalope-Dev/allmcps-server"><img src="https://glama.ai/mcp/servers/Jackalope-Dev/allmcps-server/badges/score.svg" alt="allmcps-server MCP server"></a>
 </p>
 
 The official local MCP server for [AllMCPs.com](https://allmcps.com) — search, browse, get install configs for, and submit Model Context Protocol (MCP) servers directly from Claude, Cursor, or any MCP-compatible agent.
