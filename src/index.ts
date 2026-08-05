@@ -10,7 +10,7 @@ import {
 const server = new Server(
   {
     name: "allmcps-server",
-    version: "1.0.0",
+    version: "1.0.2",
   },
   {
     capabilities: {
@@ -19,7 +19,11 @@ const server = new Server(
   }
 );
 
-const DIRECTORY_API_URL = process.env.ALLMCPS_API_URL || "https://allmcps.com/api/submit";
+// The human-facing /api/submit requires a Turnstile CAPTCHA token that a headless
+// agent has no way to solve. /api/v1/submit is the agent-facing counterpart: same
+// insert path, no Turnstile, but it requires an email (for the claim/verify
+// notification) since there's no browser session to fall back on.
+const DIRECTORY_API_URL = process.env.ALLMCPS_API_URL || "https://allmcps.com/api/v1/submit";
 
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
@@ -36,7 +40,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
             name: {
               type: "string",
-              description: "Optional. The name of the MCP server. If omitted, the directory will try to infer it from the GitHub repo.",
+              description: "The name of the MCP server.",
+            },
+            email: {
+              type: "string",
+              description: "Email address for the submission confirmation and listing claim/verify link. Not published on the listing.",
             },
             description: {
               type: "string",
@@ -47,7 +55,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               description: "Optional. The category of the server (e.g., 'Database', 'File System', 'Web Search', 'Development', 'Productivity').",
             },
           },
-          required: ["url"],
+          required: ["url", "name", "email"],
         },
       },
     ],
@@ -61,13 +69,20 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   const args = request.params.arguments as {
     url: string;
-    name?: string;
+    name: string;
+    email: string;
     description?: string;
     category?: string;
   };
 
   if (!args.url) {
     throw new Error("The 'url' argument is required.");
+  }
+  if (!args.name) {
+    throw new Error("The 'name' argument is required.");
+  }
+  if (!args.email) {
+    throw new Error("The 'email' argument is required (used for the submission confirmation and claim link).");
   }
 
   try {
@@ -79,6 +94,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       body: JSON.stringify({
         url: args.url,
         name: args.name,
+        email: args.email,
         description: args.description,
         category: args.category,
       }),
@@ -98,11 +114,25 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       };
     }
 
+    const lines = [
+      `Successfully submitted "${args.name}" to AllMCPs.com!`,
+      `Message: ${data.message}`,
+      `The server is now in the 'pending' queue for review.`,
+    ];
+
+    if (data.claim_url) {
+      lines.push(`\nClaim & verify this listing (get verified instantly by adding the badge below): ${data.claim_url}`);
+    }
+
+    if (data.badge_markdown) {
+      lines.push(`\nBadge markdown for your README:\n${data.badge_markdown}`);
+    }
+
     return {
       content: [
         {
           type: "text",
-          text: `Successfully submitted the MCP server to AllMCPs.com!\nMessage: ${data.message}\n\nThe server is now in the 'pending' queue for review.`,
+          text: lines.join("\n"),
         },
       ],
     };

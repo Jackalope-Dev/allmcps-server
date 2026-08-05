@@ -2,17 +2,20 @@
   <img src="assets/logo.png" alt="AllMCPs logo" width="96" height="96">
 </p>
 
-# allmcps-server
+<h1 align="center">allmcps-server</h1>
 
-[![AllMCPs Verified](https://allmcps.com/api/badge/allmcps-server)](https://allmcps.com/mcp/allmcps-server?verify=04aa8bd4-c85f-4470-b5b4-19d690d1cc11)
-[![npm version](https://img.shields.io/npm/v/allmcps-server.svg)](https://www.npmjs.com/package/allmcps-server)
-[![npm downloads](https://img.shields.io/npm/dm/allmcps-server.svg)](https://www.npmjs.com/package/allmcps-server)
+<p align="center">
+  <a href="https://allmcps.com/mcp/allmcps-server?verify=04aa8bd4-c85f-4470-b5b4-19d690d1cc11"><img src="https://allmcps.com/api/badge/allmcps-server" alt="AllMCPs Verified"></a>
+  <a href="https://www.npmjs.com/package/allmcps-server"><img src="https://img.shields.io/npm/v/allmcps-server.svg" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/allmcps-server"><img src="https://img.shields.io/npm/dm/allmcps-server.svg" alt="npm downloads"></a>
+  <a href="https://github.com/Jackalope-Dev/allmcps-server/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/allmcps-server.svg" alt="MIT license"></a>
+</p>
 
 The official local MCP server for [AllMCPs.com](https://allmcps.com) — submit a Model Context Protocol (MCP) server to the directory directly from Claude, Cursor, or any MCP-compatible agent.
 
 ## Install
 
-Add to your MCP client config (e.g. `claude_desktop_config.json`):
+Requires Node.js 18+. Add to your MCP client config (e.g. `claude_desktop_config.json`):
 
 ```json
 {
@@ -47,3 +50,7 @@ repo's README verifies the listing instantly instead of waiting on manual review
 
 - Directory API docs: https://allmcps.com/docs/api
 - Remote MCP server (search, install configs, categories): https://allmcps.com/api/mcp
+
+## License
+
+MIT © [Jackalope Digital](https://jackalope.digital) — see [LICENSE](LICENSE).
