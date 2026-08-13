@@ -1,6 +1,6 @@
 {
   "name": "allmcps-server",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "mcpName": "io.github.Jackalope-Dev/allmcps-server",
   "description": "The official MCP server for AllMCPs.com - search, browse, get install configs, and submit MCP servers directly from your AI agent.",
   "main": "dist/index.js",
