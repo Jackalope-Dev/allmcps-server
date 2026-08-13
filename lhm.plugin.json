@@ -7,7 +7,13 @@
   "authorUrl": "https://github.com/Jackalope-Dev",
   "icon": "https://allmcps.com/logo-icon.png",
   "category": "development",
-  "tags": ["directory", "search", "discovery", "registry", "submission"],
+  "tags": [
+    "directory",
+    "search",
+    "discovery",
+    "registry",
+    "submission"
+  ],
   "tools": [
     {
       "name": "search_mcp_servers",
@@ -15,9 +21,18 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "query": { "type": "string", "description": "Search term (e.g., \"github\", \"postgres\", \"slack\", \"database\")" },
-          "category": { "type": "string", "description": "Optional category name to filter by" },
-          "limit": { "type": "number", "description": "Max number of results to return (default: 10)" }
+          "query": {
+            "type": "string",
+            "description": "Search term (e.g., \"github\", \"postgres\", \"slack\", \"database\")"
+          },
+          "category": {
+            "type": "string",
+            "description": "Optional category name to filter by"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max number of results to return (default: 10)"
+          }
         }
       }
     },
@@ -27,20 +42,31 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "id": { "type": "string", "description": "The server ID (e.g. \"github-mcp\", \"sqlite-mcp\")" }
+          "id": {
+            "type": "string",
+            "description": "The server ID (e.g. \"github-mcp\", \"sqlite-mcp\")"
+          }
         },
-        "required": ["id"]
+        "required": [
+          "id"
+        ]
       }
     },
     {
       "name": "list_mcp_categories",
       "description": "List all categories available in the AllMCPs directory along with server counts.",
-      "inputSchema": { "type": "object", "properties": {} }
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
     },
     {
       "name": "get_boost_pricing",
       "description": "Get pricing and features for boosting / featuring an MCP server on AllMCPs.com.",
-      "inputSchema": { "type": "object", "properties": {} }
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
     },
     {
       "name": "boost_mcp_server",
@@ -48,15 +74,28 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "id": { "type": "string", "description": "The server ID to boost (e.g. \"github-mcp\")" },
+          "id": {
+            "type": "string",
+            "description": "The server ID to boost (e.g. \"github-mcp\")"
+          },
           "sku": {
             "type": "string",
-            "enum": ["featured_7d", "category_sponsor_7d", "premium_monthly", "priority_review"],
+            "enum": [
+              "featured_7d",
+              "category_sponsor_7d",
+              "premium_monthly",
+              "priority_review"
+            ],
             "description": "Sponsorship tier (default: featured_7d)"
           },
-          "email": { "type": "string", "description": "Optional contact/billing email" }
+          "email": {
+            "type": "string",
+            "description": "Optional contact/billing email"
+          }
         },
-        "required": ["id"]
+        "required": [
+          "id"
+        ]
       }
     },
     {
@@ -65,25 +104,119 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "id": { "type": "string", "description": "The server ID to check" }
+          "id": {
+            "type": "string",
+            "description": "The server ID to check"
+          }
         },
-        "required": ["id"]
+        "required": [
+          "id"
+        ]
       }
     },
     {
       "name": "submit_mcp_server",
-      "description": "Programmatically submit a new MCP server repository to AllMCPs.com for indexing and review.",
+      "description": "Programmatically submit a new MCP server repository to AllMCPs.com for indexing and review. Supports optional enrichment fields (tags, pricing, auth, license, compatible clients, maintenance status, install command) for a fully flushed-out listing — call tools/list for the exact enum values.",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "name": { "type": "string", "description": "Server name (e.g., \"PostgreSQL MCP\")" },
-          "url": { "type": "string", "description": "GitHub repository or website URL" },
-          "description": { "type": "string", "description": "Short summary of what this MCP server does" },
-          "category": { "type": "string", "description": "Category (e.g., \"Databases\", \"Developer Tools\")" },
-          "email": { "type": "string", "description": "Contact email for listing verification & status updates" },
-          "websiteUrl": { "type": "string", "description": "Optional official website URL" }
+          "name": {
+            "type": "string",
+            "description": "Server name (e.g., \"PostgreSQL MCP\")"
+          },
+          "url": {
+            "type": "string",
+            "description": "GitHub repository or website URL"
+          },
+          "description": {
+            "type": "string",
+            "description": "Short summary of what this MCP server does"
+          },
+          "category": {
+            "type": "string",
+            "description": "Best-matching category from the AllMCPs directory (see list_mcp_categories)"
+          },
+          "email": {
+            "type": "string",
+            "description": "Contact email for listing verification & status updates"
+          },
+          "websiteUrl": {
+            "type": "string",
+            "description": "Optional official website URL"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Up to 5 short lowercase keywords"
+          },
+          "pricingModel": {
+            "type": "string",
+            "enum": [
+              "free",
+              "freemium",
+              "paid",
+              "byok"
+            ],
+            "description": "How this server is priced"
+          },
+          "pricingNotes": {
+            "type": "string",
+            "description": "Short free-text pricing detail"
+          },
+          "authType": {
+            "type": "string",
+            "enum": [
+              "none",
+              "api_key",
+              "oauth",
+              "other"
+            ],
+            "description": "Authentication the server requires"
+          },
+          "license": {
+            "type": "string",
+            "description": "SPDX license identifier, e.g. \"MIT\""
+          },
+          "compatibleClients": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "MCP clients confirmed to work with this server"
+          },
+          "maintenanceStatus": {
+            "type": "string",
+            "enum": [
+              "active",
+              "stable",
+              "experimental",
+              "archived"
+            ],
+            "description": "Repository maintenance status"
+          },
+          "supportUrl": {
+            "type": "string",
+            "description": "Optional issues/discussions/docs URL"
+          },
+          "suggestedInstallCommand": {
+            "type": "string",
+            "description": "Command to run the server, e.g. \"npx\""
+          },
+          "suggestedInstallArgs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Args for the install command"
+          }
         },
-        "required": ["name", "url", "email"]
+        "required": [
+          "name",
+          "url",
+          "email"
+        ]
       }
     },
     {
@@ -92,15 +225,27 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "id": { "type": "string", "description": "The server ID to claim & verify (e.g. \"github-mcp\")" },
+          "id": {
+            "type": "string",
+            "description": "The server ID to claim & verify (e.g. \"github-mcp\")"
+          },
           "method": {
             "type": "string",
-            "enum": ["github", "website_badge", "dns"],
+            "enum": [
+              "github",
+              "website_badge",
+              "dns"
+            ],
             "description": "Verification method (default: github)"
           },
-          "websiteUrl": { "type": "string", "description": "Optional website URL for website/dns verification" }
+          "websiteUrl": {
+            "type": "string",
+            "description": "Optional website URL for website/dns verification"
+          }
         },
-        "required": ["id"]
+        "required": [
+          "id"
+        ]
       }
     }
   ]

@@ -1,0 +1,44 @@
+name: Release
+
+# Publishes to npm via Trusted Publishing (OIDC) — no NPM_TOKEN secret needed.
+# The org/repo/workflow filename here must exactly match what's registered as
+# the trusted publisher for this package on npmjs.com (Package Settings ->
+# Trusted Publisher). If you rename this file or move the job, update that
+# config too or publishing will fail auth.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  id-token: write # required for npm OIDC trusted publishing
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Ensure npm supports trusted publishing
+        run: npm install -g npm@latest
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - name: Verify tag matches package.json version
+        run: |
+          PKG_VERSION="v$(node -p "require('./package.json').version")"
+          if [ "$PKG_VERSION" != "${GITHUB_REF_NAME}" ]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match package.json version ${PKG_VERSION} — aborting."
+            exit 1
+          fi
+
+      - run: npm publish --access public

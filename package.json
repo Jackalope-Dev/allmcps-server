@@ -14,7 +14,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "version": "node scripts/sync-version.mjs && git add server.json lhm.plugin.json"
   },
   "keywords": [
     "mcp",
