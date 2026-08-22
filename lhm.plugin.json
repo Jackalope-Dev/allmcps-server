@@ -2,7 +2,7 @@
   "identifier": "jackalope-dev-allmcps-server",
   "name": "AllMCPs",
   "description": "Search, browse, get install configs for, and submit Model Context Protocol (MCP) servers to the AllMCPs.com directory.",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "author": "Jackalope Digital",
   "authorUrl": "https://github.com/Jackalope-Dev",
   "icon": "https://allmcps.com/logo-icon.png",

@@ -6,13 +6,13 @@
     "url": "https://github.com/Jackalope-Dev/allmcps-server",
     "source": "github"
   },
-  "version": "2.0.3",
+  "version": "2.1.0",
   "websiteUrl": "https://allmcps.com",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "allmcps-server",
-      "version": "2.0.3",
+      "version": "2.1.0",
       "transport": {
         "type": "stdio"
       },

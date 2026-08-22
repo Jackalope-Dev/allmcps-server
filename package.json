@@ -1,8 +1,8 @@
 {
   "name": "allmcps-server",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "mcpName": "io.github.Jackalope-Dev/allmcps-server",
-  "description": "The official MCP server for AllMCPs.com - search, browse, get install configs, and submit MCP servers directly from your AI agent.",
+  "description": "The official MCP server and CLI for AllMCPs.com - search, browse, get install configs, and submit MCP servers directly from your AI agent or a shell script.",
   "main": "dist/index.js",
   "type": "module",
   "bin": {
@@ -22,7 +22,8 @@
     "model-context-protocol",
     "allmcps",
     "claude",
-    "ai-agent"
+    "ai-agent",
+    "cli"
   ],
   "homepage": "https://allmcps.com",
   "repository": {

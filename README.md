@@ -13,7 +13,7 @@
   <a href="https://lobehub.com/mcp/jackalope-dev-allmcps-server"><img src="https://img.shields.io/badge/LobeHub-Marketplace-1677ff" alt="LobeHub Marketplace"></a>
 </p>
 
-The official local MCP server for [AllMCPs.com](https://allmcps.com) — search, browse, get install configs for, and submit Model Context Protocol (MCP) servers directly from Claude, Cursor, or any MCP-compatible agent.
+The official local MCP server **and CLI** for [AllMCPs.com](https://allmcps.com) — search, browse, get install configs for, and submit Model Context Protocol (MCP) servers directly from Claude, Cursor, any MCP-compatible agent, or a plain shell script.
 
 This package is a thin stdio bridge to the [AllMCPs remote MCP endpoint](https://allmcps.com/api/mcp). Tool
 behavior lives server-side, so this package always exposes the current live tool set with no need to
@@ -36,6 +36,21 @@ Requires Node.js 18+. Add to your MCP client config (e.g. `claude_desktop_config
   }
 }
 ```
+
+## CLI mode
+
+Run with a subcommand instead of a bare `npx allmcps-server` and it becomes a plain scriptable CLI
+over the [public REST API](https://allmcps.com/docs/api) — no MCP client needed:
+
+```bash
+npx allmcps-server search postgres      # search the directory
+npx allmcps-server categories           # list every category
+npx allmcps-server server <id>          # full detail for one listing
+npx allmcps-server help                 # usage
+```
+
+Each prints JSON to stdout, so it composes with `jq` and other Unix tools. With no subcommand it
+runs as the MCP stdio server described below (the default `npx allmcps-server` behavior).
 
 ## Tools
 
