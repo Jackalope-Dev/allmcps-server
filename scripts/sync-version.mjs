@@ -6,17 +6,19 @@
 // `npm version <bump>` keeps every manifest — and the eventual git tag — in
 // lockstep instead of relying on hand-editing three files per release.
 import { readFileSync, writeFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
-const { version } = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
+const { version } = JSON.parse(
+  readFileSync(join(root, 'package.json'), 'utf8'),
+);
 
 function updateJson(relPath, mutate) {
   const path = join(root, relPath);
   const data = JSON.parse(readFileSync(path, 'utf8'));
   mutate(data);
-  writeFileSync(path, JSON.stringify(data, null, 2) + '\n');
+  writeFileSync(path, `${JSON.stringify(data, null, 2)}\n`);
   console.log(`synced ${relPath} -> ${version}`);
 }
 

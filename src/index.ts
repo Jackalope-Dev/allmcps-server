@@ -1,22 +1,23 @@
 #!/usr/bin/env node
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
+} from '@modelcontextprotocol/sdk/types.js';
 
 const server = new Server(
   {
-    name: "allmcps-server",
-    version: "2.0.0",
+    name: 'allmcps-server',
+    // Keep in step with package.json (bumped by `npm version`).
+    version: '2.2.0',
   },
   {
     capabilities: {
       tools: {},
     },
-  }
+  },
 );
 
 // This package is a thin stdio<->HTTP bridge to https://allmcps.com/api/mcp, the
@@ -25,32 +26,49 @@ const server = new Server(
 // verification) live server-side and are fetched fresh on every request, so this
 // package never goes stale relative to the live tool set and needs no republish
 // when tools are added or changed remotely.
-const MCP_ENDPOINT = process.env.ALLMCPS_MCP_URL || "https://allmcps.com/api/mcp";
-const API_BASE = process.env.ALLMCPS_API_URL || "https://allmcps.com";
+const MCP_ENDPOINT =
+  process.env.ALLMCPS_MCP_URL || 'https://allmcps.com/api/mcp';
+const API_BASE = process.env.ALLMCPS_API_URL || 'https://allmcps.com';
 
-async function callRemote(method: string, params?: unknown) {
+async function callRemote(
+  method: string,
+  params?: { name?: string; arguments?: unknown },
+) {
+  // The stdio side negotiates the protocol with the local client (via the
+  // SDK); this leg is a stateless JSON-RPC call the remote serves for any
+  // revision. Mcp-Method / Mcp-Name mirror the body, as Streamable HTTP asks.
   const response = await fetch(MCP_ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json, text/event-stream',
+      'Mcp-Method': method,
+      ...(params?.name ? { 'Mcp-Name': params.name } : {}),
+    },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
   });
 
-  const data = (await response.json()) as any;
+  const data = (await response.json().catch(() => null)) as any;
+  if (!data) {
+    throw new Error(
+      `AllMCPs returned HTTP ${response.status} with no JSON-RPC body.`,
+    );
+  }
 
   if (data.error) {
-    throw new Error(data.error.message || "Remote MCP request failed.");
+    throw new Error(data.error.message || 'Remote MCP request failed.');
   }
 
   return data.result;
 }
 
 server.setRequestHandler(ListToolsRequestSchema, async () => {
-  return await callRemote("tools/list");
+  return await callRemote('tools/list');
 });
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   try {
-    return await callRemote("tools/call", {
+    return await callRemote('tools/call', {
       name: request.params.name,
       arguments: request.params.arguments,
     });
@@ -58,7 +76,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     return {
       content: [
         {
-          type: "text",
+          type: 'text',
           text: `Error calling AllMCPs: ${error.message}`,
         },
       ],
@@ -75,7 +93,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 // developers can call `npx allmcps-server search postgres` directly from a
 // shell script or CI step.
 
-const CLI_COMMANDS = ["search", "categories", "server", "help"] as const;
+const CLI_COMMANDS = ['search', 'categories', 'server', 'help'] as const;
 type CliCommand = (typeof CLI_COMMANDS)[number];
 
 function isCliCommand(value: string): value is CliCommand {
@@ -104,7 +122,9 @@ async function fetchJson(path: string) {
   const body = (await res.json().catch(() => null)) as unknown;
   if (!res.ok) {
     const message =
-      body && typeof body === "object" && "message" in body ? (body as { message?: string }).message : res.statusText;
+      body && typeof body === 'object' && 'message' in body
+        ? (body as { message?: string }).message
+        : res.statusText;
     throw new Error(`AllMCPs API request failed (${res.status}): ${message}`);
   }
   return body;
@@ -112,30 +132,44 @@ async function fetchJson(path: string) {
 
 async function runCli(command: CliCommand, args: string[]) {
   switch (command) {
-    case "help": {
+    case 'help': {
       printHelp();
       return;
     }
-    case "categories": {
-      console.log(JSON.stringify(await fetchJson("/api/v1/categories"), null, 2));
+    case 'categories': {
+      console.log(
+        JSON.stringify(await fetchJson('/api/v1/categories'), null, 2),
+      );
       return;
     }
-    case "search": {
-      const query = args.join(" ").trim();
+    case 'search': {
+      const query = args.join(' ').trim();
       if (!query) {
-        console.error("Usage: allmcps-server search <query>");
+        console.error('Usage: allmcps-server search <query>');
         process.exit(1);
       }
-      console.log(JSON.stringify(await fetchJson(`/api/v1/search?q=${encodeURIComponent(query)}`), null, 2));
+      console.log(
+        JSON.stringify(
+          await fetchJson(`/api/v1/search?q=${encodeURIComponent(query)}`),
+          null,
+          2,
+        ),
+      );
       return;
     }
-    case "server": {
+    case 'server': {
       const id = args[0];
       if (!id) {
-        console.error("Usage: allmcps-server server <id>");
+        console.error('Usage: allmcps-server server <id>');
         process.exit(1);
       }
-      console.log(JSON.stringify(await fetchJson(`/api/v1/servers/${encodeURIComponent(id)}`), null, 2));
+      console.log(
+        JSON.stringify(
+          await fetchJson(`/api/v1/servers/${encodeURIComponent(id)}`),
+          null,
+          2,
+        ),
+      );
       return;
     }
   }
@@ -154,22 +188,26 @@ async function main() {
     return;
   }
 
-  if (maybeCommand && (maybeCommand === "--help" || maybeCommand === "-h")) {
+  if (maybeCommand && (maybeCommand === '--help' || maybeCommand === '-h')) {
     printHelp();
     return;
   }
 
   if (maybeCommand) {
-    console.error(`Unknown command "${maybeCommand}". Run "allmcps-server help" for usage.`);
+    console.error(
+      `Unknown command "${maybeCommand}". Run "allmcps-server help" for usage.`,
+    );
     process.exit(1);
   }
 
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error(`AllMCPs MCP Server running on stdio (proxying ${MCP_ENDPOINT})`);
+  console.error(
+    `AllMCPs MCP Server running on stdio (proxying ${MCP_ENDPOINT})`,
+  );
 }
 
 main().catch((error) => {
-  console.error("Server error:", error);
+  console.error('Server error:', error);
   process.exit(1);
 });

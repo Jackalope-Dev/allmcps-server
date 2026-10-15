@@ -56,18 +56,28 @@ runs as the MCP stdio server described below (the default `npx allmcps-server` b
 
 | Tool                    | Required arguments   | Description                                                              |
 | ----------------------- | --------------------- | ------------------------------------------------------------------------- |
-| `search_mcp_servers`    | —                     | Search the directory by keyword and/or category.                         |
-| `get_mcp_install_config`| `id`                  | Get the install config snippet and docs for a server by ID.              |
+| `search_mcp_servers`    | —                     | Search by keyword and/or category; optional `transport` (remote/stdio) and `verified_only` filters. |
+| `get_mcp_install_config`| `id`                  | Setup for a server in 13 clients (Claude Desktop, Claude Code, Cursor, VS Code, Windsurf, Cline, Zed, Codex, Gemini CLI, JetBrains, Roo Code, Continue, LM Studio); optional `client` for one. |
+| `get_mcp_alternatives`  | `id`                  | Alternatives to a server in the same category.                           |
+| `compare_mcp_servers`   | `ids` (2 to 4)        | Side by side: install, evidence it works, tools, health, stars, last commit, quality score. |
+| `recommend_mcp_stack`   | `role`                | A small stack of complementary servers for a role or workflow.           |
 | `list_mcp_categories`   | —                     | List all categories with server counts.                                  |
 | `get_boost_pricing`     | —                     | Get pricing and features for boosting/featuring a listing.               |
 | `boost_mcp_server`      | `id`                  | Start a sponsorship/boost order — returns a Stripe checkout URL and x402 invoice. |
 | `get_boost_status`      | `id`                  | Check boost and verified-badge status for a listing.                     |
 | `submit_mcp_server`     | `name`, `url`, `email`| Submit a new MCP server to the directory.                                |
 | `verify_mcp_claim`      | `id`                  | Verify ownership and claim a listing via GitHub README, site badge, or DNS. |
+| `register_mcp_agent`    | `email`               | Start unattended-agent registration — emails a confirmation code.        |
+| `confirm_mcp_agent`     | `email`, `code`       | Exchange the emailed code for a bearer token (see below).                |
 
 `submit_mcp_server` submissions land in the `pending` review queue at [allmcps.com](https://allmcps.com).
 The response includes a `claim_url` and a ready-to-paste `badge_markdown` snippet — adding that badge to
 your repo's README verifies the listing instantly instead of waiting on manual review.
+
+`verify_mcp_claim` normally requires an active AllMCPs sign-in, which an unattended agent doesn't have.
+To claim without a browser session: call `register_mcp_agent`, retrieve the code from the email it sends,
+call `confirm_mcp_agent` to mint a bearer token, then pass that token as `agentToken` on `verify_mcp_claim`.
+Full spec: https://allmcps.com/auth.md
 
 Every tool's full input schema (including optional arguments like `category`, `description`, `sku`, and
 `method`) is available at runtime via the standard MCP `tools/list` call, or by inspecting

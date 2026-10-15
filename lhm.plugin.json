@@ -2,18 +2,12 @@
   "identifier": "jackalope-dev-allmcps-server",
   "name": "AllMCPs",
   "description": "Search, browse, get install configs for, and submit Model Context Protocol (MCP) servers to the AllMCPs.com directory.",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "author": "Jackalope Digital",
   "authorUrl": "https://github.com/Jackalope-Dev",
   "icon": "https://allmcps.com/logo-icon.png",
   "category": "development",
-  "tags": [
-    "directory",
-    "search",
-    "discovery",
-    "registry",
-    "submission"
-  ],
+  "tags": ["directory", "search", "discovery", "registry", "submission"],
   "tools": [
     {
       "name": "search_mcp_servers",
@@ -47,9 +41,7 @@
             "description": "The server ID (e.g. \"github-mcp\", \"sqlite-mcp\")"
           }
         },
-        "required": [
-          "id"
-        ]
+        "required": ["id"]
       }
     },
     {
@@ -93,9 +85,7 @@
             "description": "Optional contact/billing email"
           }
         },
-        "required": [
-          "id"
-        ]
+        "required": ["id"]
       }
     },
     {
@@ -109,9 +99,7 @@
             "description": "The server ID to check"
           }
         },
-        "required": [
-          "id"
-        ]
+        "required": ["id"]
       }
     },
     {
@@ -153,12 +141,7 @@
           },
           "pricingModel": {
             "type": "string",
-            "enum": [
-              "free",
-              "freemium",
-              "paid",
-              "byok"
-            ],
+            "enum": ["free", "freemium", "paid", "byok"],
             "description": "How this server is priced"
           },
           "pricingNotes": {
@@ -167,12 +150,7 @@
           },
           "authType": {
             "type": "string",
-            "enum": [
-              "none",
-              "api_key",
-              "oauth",
-              "other"
-            ],
+            "enum": ["none", "api_key", "oauth", "other"],
             "description": "Authentication the server requires"
           },
           "license": {
@@ -188,12 +166,7 @@
           },
           "maintenanceStatus": {
             "type": "string",
-            "enum": [
-              "active",
-              "stable",
-              "experimental",
-              "archived"
-            ],
+            "enum": ["active", "stable", "experimental", "archived"],
             "description": "Repository maintenance status"
           },
           "supportUrl": {
@@ -212,16 +185,12 @@
             "description": "Args for the install command"
           }
         },
-        "required": [
-          "name",
-          "url",
-          "email"
-        ]
+        "required": ["name", "url", "email"]
       }
     },
     {
       "name": "verify_mcp_claim",
-      "description": "Verify ownership and claim an MCP server listing by checking GitHub README badge, website badge, or DNS TXT record.",
+      "description": "Verify ownership and claim an MCP server listing by checking GitHub README badge, website badge, or DNS TXT record. Works unattended if given agentToken (from confirm_mcp_agent); otherwise requires an active sign-in session.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -231,21 +200,60 @@
           },
           "method": {
             "type": "string",
-            "enum": [
-              "github",
-              "website_badge",
-              "dns"
-            ],
+            "enum": ["github", "website_badge", "dns"],
             "description": "Verification method (default: github)"
           },
           "websiteUrl": {
             "type": "string",
             "description": "Optional website URL for website/dns verification"
+          },
+          "agentToken": {
+            "type": "string",
+            "description": "Bearer token from confirm_mcp_agent, for unattended verification with no sign-in. Requires the \"listings:claim\" scope."
           }
         },
-        "required": [
-          "id"
-        ]
+        "required": ["id"]
+      }
+    },
+    {
+      "name": "register_mcp_agent",
+      "description": "Start unattended-agent registration: emails a 6-digit confirmation code to the given address. Follow up with confirm_mcp_agent to get a bearer token.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address to register — must receive mail you can read to retrieve the confirmation code."
+          },
+          "agentName": {
+            "type": "string",
+            "description": "Optional label for this agent/integration."
+          },
+          "scopes": {
+            "type": "array",
+            "items": { "type": "string", "enum": ["listings:claim"] },
+            "description": "Optional — permissions to request. Defaults to the full supported set if omitted."
+          }
+        },
+        "required": ["email"]
+      }
+    },
+    {
+      "name": "confirm_mcp_agent",
+      "description": "Exchange the 6-digit code emailed by register_mcp_agent for a durable bearer token (90-day TTL), used as agentToken on verify_mcp_claim.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Same email address passed to register_mcp_agent."
+          },
+          "code": {
+            "type": "string",
+            "description": "The 6-digit code received by email."
+          }
+        },
+        "required": ["email", "code"]
       }
     }
   ]

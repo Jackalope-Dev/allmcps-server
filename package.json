@@ -1,6 +1,6 @@
 {
   "name": "allmcps-server",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "mcpName": "io.github.Jackalope-Dev/allmcps-server",
   "description": "The official MCP server and CLI for AllMCPs.com - search, browse, get install configs, and submit MCP servers directly from your AI agent or a shell script.",
   "main": "dist/index.js",
@@ -42,7 +42,7 @@
     "@modelcontextprotocol/sdk": "^1.0.1"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
-    "typescript": "^5.6.0"
+    "@types/node": "^26.5.1",
+    "typescript": "^7.0.2"
   }
 }
