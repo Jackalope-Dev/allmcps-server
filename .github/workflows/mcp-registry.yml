@@ -1,0 +1,53 @@
+name: Publish to MCP Registry
+
+# Publishes server.json to the official MCP Registry
+# (registry.modelcontextprotocol.io) under io.github.Jackalope-Dev/*.
+#
+# Uses GitHub OIDC: the registry trusts a GitHub-signed token proving this
+# workflow runs in a Jackalope-Dev repository, so no personal login, token,
+# or GitHub App install is needed. (Interactive `mcp-publisher login github`
+# can't see org ownership because the registry's GitHub App isn't
+# installable on organizations.)
+#
+# Runs after a successful Release (npm publish must land first — the registry
+# checks the npm package's mcpName), and can be run by hand.
+
+on:
+  workflow_run:
+    workflows: [Release]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  id-token: write # required for mcp-publisher login github-oidc
+  contents: read
+
+jobs:
+  publish:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    env:
+      MCP_PUBLISHER_VERSION: v1.8.1
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install mcp-publisher
+        run: |
+          curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}/mcp-publisher_linux_amd64.tar.gz" \
+            | tar xz mcp-publisher
+          ./mcp-publisher --help >/dev/null
+
+      - name: Verify server.json matches package.json
+        run: |
+          PKG="$(node -p "require('./package.json').version")"
+          SRV="$(node -p "require('./server.json').version")"
+          if [ "$PKG" != "$SRV" ]; then
+            echo "server.json version $SRV does not match package.json $PKG — aborting."
+            exit 1
+          fi
+
+      - name: Authenticate (GitHub OIDC)
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish
+        run: ./mcp-publisher publish
